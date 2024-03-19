@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32825.248
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "game", "game\game.vcxproj", "{9E0EAE92-E2E2-4A0F-9C83-EEC6B4DA5A00}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F4A370BB-EC83-4F78-BC02-5E08EDC4ACD8} = {F4A370BB-EC83-4F78-BC02-5E08EDC4ACD8}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gfc", "game\gfc\gfc.vcxproj", "{F4A370BB-EC83-4F78-BC02-5E08EDC4ACD8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9E0EAE92-E2E2-4A0F-9C83-EEC6B4DA5A00}.Debug|x86.ActiveCfg = Debug|Win32
+		{9E0EAE92-E2E2-4A0F-9C83-EEC6B4DA5A00}.Debug|x86.Build.0 = Debug|Win32
+		{9E0EAE92-E2E2-4A0F-9C83-EEC6B4DA5A00}.Release|x86.ActiveCfg = Release|Win32
+		{9E0EAE92-E2E2-4A0F-9C83-EEC6B4DA5A00}.Release|x86.Build.0 = Release|Win32
+		{F4A370BB-EC83-4F78-BC02-5E08EDC4ACD8}.Debug|x86.ActiveCfg = Debug|Win32
+		{F4A370BB-EC83-4F78-BC02-5E08EDC4ACD8}.Debug|x86.Build.0 = Debug|Win32
+		{F4A370BB-EC83-4F78-BC02-5E08EDC4ACD8}.Release|x86.ActiveCfg = Release|Win32
+		{F4A370BB-EC83-4F78-BC02-5E08EDC4ACD8}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {49F7525C-E097-467E-AC3D-1A48159B890C}
+	EndGlobalSection
+EndGlobal
