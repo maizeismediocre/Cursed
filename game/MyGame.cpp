@@ -6,10 +6,10 @@
 CMyGame::CMyGame(void)
 	// to initialise more sprites here use a comma-separated list
 {
-	drop_ready = false;
+	is_falling = false;
 	// TODO: add initialisation here
-	
-
+	theWalls.push_back(new CSprite(CRectangle(400, 0, 30, 1080), "wallvert.bmp", CColor::Blue(), GetTime()));
+	theWalls.push_back(new CSprite(CRectangle(1500, 0, 30, 1080), "wallvert.bmp", CColor::Blue(), GetTime()));
 }
 
 CMyGame::~CMyGame(void)
@@ -25,40 +25,75 @@ void CMyGame::OnUpdate()
 	Uint32 t = GetTime();
 
 	// TODO: add the game update code here
-	player.Update(t);
 	Playercontrol();
+	player.Update(t);
+
+	
 }
 
 void CMyGame::OnDraw(CGraphics* g)
 {
 	// TODO: add drawing code here
 	player.Draw(g);
+	for (CSprite* pWall : theWalls)
+		pWall->Draw(g);
 	
-
 	
 }
 void CMyGame::Playercontrol()
 {
 	CVector gravity(0, -5);
-	CVector jetpack(0, 5);
 	
-	
+	if (IsKeyDown(SDLK_DOWN))
+	{
+		is_falling = true;
+	}
+	if (is_falling == true)
+	{
 		player.Accelerate(gravity);
-	
+	}
 		if (IsKeyDown(SDLK_LEFT)) player.SetMotion(-400,player.GetYVelocity());
 		else if (IsKeyDown(SDLK_RIGHT)) player.SetMotion(400, player.GetYVelocity());
 		else player.SetMotion(0, player.GetYVelocity());
 		if (IsKeyDown(SDLK_z))
 		{
-			player.Accelerate(jetpack);
+			player.SetMotion(player.GetXVelocity(),0);
 	}
 	
 	if (player.GetBottom() < 0)
 	{
 		player.SetPos(960, 1000);
 		player.SetMotion(0,0);
-		drop_ready = false;
+		
+		is_falling = false;
 	}
+	for (CSprite* pWall : theWalls)
+	{
+		if (player.HitTest(pWall))
+		{
+			if (player.GetLeft() < 451)
+			{
+				player.SetX(451);
+			}
+			if (player.GetRight() > 1480)
+			{
+				player.SetX(1480);
+
+			}
+		}
+	
+	}
+	// add gun boots 
+	// add cool down for jetpack
+	// add platform for the player to stand on, pressing down arrow will make the player fall through it 
+	// add phase shield which changes the sprite appearance and gives the player invicibility for a set time
+}
+
+void CMyGame::Enemycontrol()
+{
+	//add horizontal control jetpack cultist
+	//add the gun cultist that shoots at the player
+
 }
 
 /////////////////////////////////////////////////////

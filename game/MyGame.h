@@ -4,13 +4,14 @@ class CMyGame : public CGame
 {
 	// Define sprites and other instance variables here
 	CSprite player;
+	CSpriteList theWalls;
 	//sounds
 
 	// ints and bools
-	bool drop_ready;
+	bool is_falling;
 	// member functions
 	void Playercontrol();
-	
+	void Enemycontrol();
 
 public:
 	CMyGame(void);
