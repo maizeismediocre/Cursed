@@ -4,15 +4,28 @@ class CMyGame : public CGame
 {
 	// Define sprites and other instance variables here
 	CSprite player;
-	CSpriteList theWalls;
+	CSpriteList theSpikes;
+	CSpriteList platform;
+	CSprite background;
+	CSpriteList shotList;
+
 	//sounds
 
 	// ints and bools
 	bool is_falling;
+	bool game_over;
+	bool hint;
+	 int level_segment;
+	 int jetpack_fuel;
+	 int shots;
+	 int lives;
+	 int shot_timer;
 	// member functions
 	void Playercontrol();
 	void Enemycontrol();
-
+	void levelsegments();
+	void shotcontrol();
+	void phase_shield();
 public:
 	CMyGame(void);
 	~CMyGame(void);
