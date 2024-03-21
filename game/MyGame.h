@@ -14,12 +14,18 @@ class CMyGame : public CGame
 	// ints and bools
 	bool is_falling;
 	bool game_over;
+	bool is_shielded;
+
 	bool hint;
 	 int level_segment;
 	 int jetpack_fuel;
+	 int shield_timer;
 	 int shots;
 	 int lives;
 	 int shot_timer;
+	 int level;
+	 
+	 int shield_cooldown;
 	// member functions
 	void Playercontrol();
 	void Enemycontrol();

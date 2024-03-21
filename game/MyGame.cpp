@@ -34,6 +34,7 @@ void CMyGame::OnUpdate()
 	Playercontrol();
 	player.Update(t);
 	shotcontrol();
+	phase_shield();
 	if (lives == 0)
 	{
 		GameOver();
@@ -44,7 +45,14 @@ void CMyGame::OnUpdate()
 	{
 		--shot_timer;
 	}
-	
+	if (shield_timer > 0)
+	{
+		--shield_timer;
+	}
+	if (shield_cooldown > 0)
+	{
+		--shield_cooldown;
+	}
 }
 
 void CMyGame::OnDraw(CGraphics* g)
@@ -59,10 +67,18 @@ void CMyGame::OnDraw(CGraphics* g)
 	for (CSprite* pShot : shotList)
 		pShot->Draw(g);
 
-	*g << font(28) << color(CColor::Green()) << xy(10, 1050) << "lives: " << lives;
-	*g << font(28) << color(CColor::Green()) << xy(10, 1000) << "level segment: " << level_segment;
-	*g << font(28) << color(CColor::Green()) << xy(10, 950) << "jetpack fuel: " << jetpack_fuel;
-	*g << font(28) << color(CColor::Green()) << xy(10, 900) << "shots: " << shots;
+	*g << font(28) << color(CColor::Green()) << xy(10, 1050) << "level: " << level;
+	*g << font(28) << color(CColor::Green()) << xy(10, 1000) << "lives: " << lives;
+	*g << font(28) << color(CColor::Green()) << xy(10, 950) << "level segment: " << level_segment;
+	*g << font(28) << color(CColor::Green()) << xy(10, 900) << "jetpack fuel: " << jetpack_fuel;
+	*g << font(28) << color(CColor::Green()) << xy(10, 850) << "shots: " << shots;
+	*g << font(28) << color(CColor::Green()) << xy(10, 800) << "shield timer: " << shield_timer;
+	
+if (is_shielded == true)
+	{
+		*g << font(28) << color(CColor::Green()) << xy(10, 750) << "shielded";
+	}
+
 	if (game_over == true)
 	{
 		*g << font(50) << color(CColor::Red()) << xy(850, 540) << "GAME OVER";
@@ -215,6 +231,23 @@ void CMyGame::shotcontrol()
 void CMyGame::phase_shield()
 {
 	//  TO DO add phase shield which changes the sprite appearance and gives the player invicibility for a set time
+	if (IsKeyDown(SDLK_c) && shield_cooldown == 0)
+	{
+		shield_timer = 20;
+		shield_cooldown = 20;
+	}
+	
+if (shield_timer > 0)
+	{
+		is_shielded = true;
+	}
+	else
+	{
+		is_shielded = false;
+	}
+
+
+	
 	// TO DO change sprite according to the phase shield
 	// TO DO use a timer to set the time of the phase shield
 }
@@ -254,7 +287,7 @@ void CMyGame::OnStartLevel(Sint16 nLevel)
 {
 	game_over = false;
 	lives = 3;
-	
+	level = 5;
 	jetpack_fuel = 100;
 	shots = 5;
 	level_segment = 1;
