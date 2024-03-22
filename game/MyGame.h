@@ -24,14 +24,15 @@ class CMyGame : public CGame
 	 int lives;
 	 int shot_timer;
 	 int level;
-	 
+	 int attempts;
 	 int shield_cooldown;
 	// member functions
 	void Playercontrol();
 	void Enemycontrol();
-	void levelsegments();
+	
 	void shotcontrol();
 	void phase_shield();
+	void spikes();
 public:
 	CMyGame(void);
 	~CMyGame(void);
