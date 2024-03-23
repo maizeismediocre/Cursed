@@ -1,7 +1,7 @@
 TO DO 
 
 
-
+// TO DO when the bullets from the enemy hit a shielded player they are absorbed and the played get the bullets
 
 // TO DO set up the level segments with different enemies and obstacles
 
