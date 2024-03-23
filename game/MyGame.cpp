@@ -6,11 +6,6 @@
 CMyGame::CMyGame(void)
 	// to initialise more sprites here use a comma-separated list
 {
-	
-	
-	
-	
-	
 	platform.push_back(new CSprite(CRectangle(780, 950, 300, 30), "platform.bmp", CColor::Black(), GetTime()));
 	
 }
@@ -33,14 +28,20 @@ void CMyGame::OnUpdate()
 	player.Update(t);
 	shotcontrol();
 	phase_shield();
-	
+	Enemycontrol();
 	if (lives == 0)
 	{
 		GameOver();
 	}
 	for (CSprite* pShot : shotList)
 		pShot->Update(t);
-	
+	for (CSprite* jetpack_cultist : jetpack_enemies)
+		jetpack_cultist->Update(t);
+	for (CSprite* gun_cultist : gun_enemies)
+		gun_cultist->Update(t);
+	for (CSprite* enemy_shot : gun_enemy_shots)
+		enemy_shot->Update(t);
+
 	if (shot_timer > 0)
 	{
 		--shot_timer;
@@ -66,6 +67,12 @@ void CMyGame::OnDraw(CGraphics* g)
 		pPlatform->Draw(g);
 	for (CSprite* pShot : shotList)
 		pShot->Draw(g);
+	for (CSprite* jetpack_cultist : jetpack_enemies)
+		jetpack_cultist->Draw(g);
+	for (CSprite* gun_cultist : gun_enemies)
+		gun_cultist->Draw(g);
+	for (CSprite* enemy_shot : gun_enemy_shots)
+		enemy_shot->Draw(g);
 
 	*g << font(28) << color(CColor::Green()) << xy(10, 1050) << "level: " << level;
 	*g << font(28) << color(CColor::Green()) << xy(10, 1000) << "lives: " << lives;
@@ -199,15 +206,77 @@ void CMyGame::Playercontrol()
 void CMyGame::Enemycontrol()
 {
 	// TO DO add horizontal control jetpack cultist
+	for (CSprite* jetpack_cultist : jetpack_enemies)
+	{
+		// if the jetpack cultist goes past x 435 it will turn around
+		if (jetpack_cultist->GetX() <= 435)
+		{
+			jetpack_cultist->SetMotion(100, 0);
+		}
+		// if the jetpack cultist goes past x 1430 it will turn around
+		if (jetpack_cultist->GetX() >= 1430)
+		{
+			jetpack_cultist->SetMotion(-100, 0);
+		}
+		if (player.HitTest(jetpack_cultist) && is_shielded == false)
+		{
+			player.SetPos(960, 1000);
+			player.SetMotion(0, 0);
+			--lives;
+			jetpack_fuel = 100;
+			shots = 5;
+
+
+
+		}
+	}
+
 	// TO DO add the gun cultist that shoots at the player
 
+	// make it so the gun cultist's direction is always facing the player
+
+	for (CSprite* gun_cultist : gun_enemies)
+	{
+		CVector direction = player.GetPosition() - gun_cultist->GetPosition();
+		gun_cultist->SetDirection(direction);
+		gun_cultist->SetRotation(gun_cultist->GetDirection());
+		if (rand() % 250 == 0 && is_falling == true)
+		{
+			CSprite* enemy_shot = new CSprite(gun_cultist->GetX(), gun_cultist->GetY(), 0, 0, GetTime());
+			enemy_shot->AddImage("enemy_shot.png", "enemyshot", 10, 1, 0, 0, 9, 0);
+			enemy_shot->SetAnimation("enemyshot",12);
+			enemy_shot->SetDirection(player.GetPosition() - gun_cultist->GetPosition());
+			enemy_shot->SetSpeed(300);
+			gun_enemy_shots.push_back(enemy_shot);
+			
+		}
+	}
 }
+	// make it so the gun cultist shoots at the player
 
 
 
 void CMyGame::shotcontrol()
 {
-	
+	// if the enemy shots go off the screen they are deleted
+	for (CSprite* enemy_shot : gun_enemy_shots)
+	{
+		if (enemy_shot->GetY() < 0) enemy_shot->Delete();
+	}
+
+	// if the player gets hit by the enemy shot and is not shielded they lose a life
+	for (CSprite* enemy_shot : gun_enemy_shots)
+	{
+		if (player.HitTest(enemy_shot) && is_shielded == false)
+		{
+			player.SetPos(960, 1000);
+			player.SetMotion(0, 0);
+			--lives;
+			jetpack_fuel = 100;
+			shots = 5;
+			enemy_shot->Delete();
+		}
+	}
 	
 
 	
@@ -235,10 +304,36 @@ void CMyGame::shotcontrol()
 	}
 	for (CSprite* pShot : shotList)
 	{
+		for (CSprite* jetpack_enemies : jetpack_enemies)
+		{
+			if (pShot->HitTest(jetpack_enemies))
+			{
+				jetpack_enemies->Delete();
+				pShot->Delete();
+			}
+		}
+	}
+	for (CSprite* pShot : shotList)
+	{
+		for (CSprite* gun_enemies : gun_enemies)
+		{
+			if (pShot->HitTest(gun_enemies))
+			{
+				gun_enemies->Delete();
+				pShot->Delete();
+			}
+		}
+	}
+
+	for (CSprite* pShot : shotList)
+	{
 
 		if (pShot->GetY() < 0) pShot->Delete();
 	}
 	shotList.delete_if(deleted);
+	jetpack_enemies.delete_if(deleted);
+	gun_enemies.delete_if(deleted);
+	gun_enemy_shots.delete_if(deleted);
 }
 
 void CMyGame::phase_shield()
@@ -306,6 +401,7 @@ void CMyGame::OnInitialize()
 	background.SetImage("temp_background.bmp");
 	player.LoadImage("player_temp.bmp", CColor::Red());
 	player.SetImage("player_temp.bmp");
+	
 	player.LoadImage("player_shield_temp.bmp", CColor::Red());
 
 }
@@ -334,9 +430,13 @@ void CMyGame::OnStartLevel(Sint16 nLevel)
 		delete pSpikes;
 	}
 	theSpikes.clear();
+	jetpack_enemies.clear();
+	gun_enemies.clear();
 	theSpikes.push_back(new CSprite(CRectangle(400, 0, 30, 1080), "spike_v.bmp", CColor::Black(), GetTime()));
 	theSpikes.back()->Rotate(180);
 	theSpikes.push_back(new CSprite(CRectangle(1430, 0, 30, 1080), "spike_v.bmp", CColor::Black(), GetTime()));
+	gun_enemy_shots.clear();
+	shotList.clear();
 
 	game_over = false;
 	lives = 3;
@@ -351,21 +451,25 @@ void CMyGame::OnStartLevel(Sint16 nLevel)
 			// menu mode
 		break;
 		case 1: // level 1 add vertical spikes 
-		// first layer of spikes
+		// first layer of obstacles
 		theSpikes.push_back(new CSprite(CRectangle(450, 700, 200, 30), "spike_h.bmp", CColor::Black(), GetTime()));
 		theSpikes.push_back(new CSprite(CRectangle(1200, 700, 200, 30), "spike_h.bmp", CColor::Black(), GetTime()));
 		theSpikes.push_back(new CSprite(CRectangle(730, 700, 400, 30), "spike_h.bmp", CColor::Black(), GetTime()));
-		// second layer of spikes
-		theSpikes.push_back(new CSprite(CRectangle(650, 550, 100, 30), "spike_h.bmp", CColor::Black(), GetTime()));
-		theSpikes.push_back(new CSprite(CRectangle(1100, 550, 100, 30), "spike_h.bmp", CColor::Black(), GetTime()));
-		// third layer of spikes
+		// second layer of obstacles
+		jetpack_enemies.push_back(new CSprite(650, 550, "jetpack_cultist.bmp", CColor::Blue(), GetTime()));
+		jetpack_enemies.back()->SetMotion(100, 0);
+		jetpack_enemies.push_back(new CSprite(1200, 550, "jetpack_cultist.bmp", CColor::Blue(), GetTime()));
+		jetpack_enemies.back()->SetMotion(-100, 0);
+		
+		
+		// second layer of obstacles
 		theSpikes.push_back(new CSprite(CRectangle(730, 350, 400, 30), "spike_h.bmp", CColor::Black(), GetTime()));
 		theSpikes.push_back(new CSprite(CRectangle(450, 350, 200, 30), "spike_h.bmp", CColor::Black(), GetTime()));
 		theSpikes.push_back(new CSprite(CRectangle(1200, 350, 200, 30), "spike_h.bmp", CColor::Black(), GetTime()));
-		// fourth layer of spikes
-		theSpikes.push_back(new CSprite(CRectangle(650, 200, 100, 30), "spike_h.bmp", CColor::Black(), GetTime()));
-		theSpikes.push_back(new CSprite(CRectangle(1100, 200, 100, 30), "spike_h.bmp", CColor::Black(), GetTime()));
-		// fifth layer of spikes
+		// second layer of obstacles
+		gun_enemies.push_back(new CSprite(650, 200, "Gunboot_cultist.bmp", CColor::Blue(), GetTime()));
+		gun_enemies.push_back(new CSprite(1200, 200, "Gunboot_cultist.bmp", CColor::Blue(), GetTime()));
+		// second layer of obstacles
 		theSpikes.push_back(new CSprite(CRectangle(730, 50, 400, 30), "spike_h.bmp", CColor::Black(), GetTime()));
 		
 

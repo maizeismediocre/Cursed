@@ -8,7 +8,9 @@ class CMyGame : public CGame
 	CSpriteList platform;
 	CSprite background;
 	CSpriteList shotList;
-
+	CSpriteList jetpack_enemies; // jet pack enemy
+	CSpriteList gun_enemies; // gun boot enemy
+	CSpriteList gun_enemy_shots; // gun boot enemy shots
 	//sounds
 
 	// ints and bools
