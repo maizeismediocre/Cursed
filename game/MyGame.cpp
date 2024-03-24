@@ -501,7 +501,7 @@ void CMyGame::OnInitialize()
 {
 	background.LoadImage("temp_background.bmp");
 	background.SetImage("temp_background.bmp");
-	player.LoadImage("player_temp.bmp", CColor::Red());
+	player.LoadImage("player_temp.bmp", CColor::Blue());
 	player.SetImage("player_temp.bmp");
 	
 	startscreen.LoadImage("Startscreen.bmp");
