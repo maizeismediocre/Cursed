@@ -107,7 +107,7 @@ void CMyGame::OnDraw(CGraphics* g)
 
 	if (game_over == true && gamewon == false)
 	{
-		over.Play("gameover.wav");
+		
 		*g << font(50) << color(CColor::Red()) << xy(850, 540) << "GAME OVER";
 		
 	}
@@ -556,7 +556,8 @@ void CMyGame::OnStartLevel(Sint16 nLevel)
 	platform.push_back(new CSprite(CRectangle(780, 950, 300, 30), "platform.bmp", CColor::Black(), GetTime()));
 	
 
-
+	hint = false;
+	
 	game_over = false;
 	lives = 3;
 	level = 5;
@@ -676,6 +677,10 @@ void CMyGame::OnStartLevel(Sint16 nLevel)
 void CMyGame::OnGameOver()
 {
 	game_over = true;
+	if (gamewon == false)
+	{
+		over.Play("gameover.wav");
+	}
 	
 	
 }
