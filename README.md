@@ -1,9 +1,3 @@
-TO DO 
+TO DO
 
-
-
-
-// TO DO set up the level segments with different enemies and obstacles
-
-// TO DO ADD TEMPORARY SPLASHSCREEN
-// ADD MUSIC and sound effects
+// replace all temp sprites with finished ones including the start screen, maybe leave the endscreen because it would be funny

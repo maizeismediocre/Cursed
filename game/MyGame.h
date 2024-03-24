@@ -7,9 +7,12 @@ class CMyGame : public CGame
 	CSpriteList theSpikes;
 	CSpriteList platform;
 	CSprite background;
+	CSprite startscreen;
+	CSprite endscreen;
 	CSpriteList shotList;
 	CSpriteList jetpack_enemies; // jet pack enemy
 	CSpriteList gun_enemies; // gun boot enemy
+	CSpriteList shield_enemies; // shield enemy
 	CSpriteList gun_enemy_shots; // gun boot enemy shots
 	//sounds
 
@@ -17,8 +20,8 @@ class CMyGame : public CGame
 	bool is_falling;
 	bool game_over;
 	bool is_shielded;
-
 	bool hint;
+	bool gamewon;
 	 int level_segment;
 	 int jetpack_fuel;
 	 int shield_timer;
@@ -35,6 +38,15 @@ class CMyGame : public CGame
 	void shotcontrol();
 	void phase_shield();
 	void spikes();
+	// sounds
+	CSoundPlayer shotSound; // plays when the shot is shot
+	CSoundPlayer shieldsound;
+	CSoundPlayer Nextlevel;
+	CSoundPlayer over;
+	CSoundPlayer hit;
+	CSoundPlayer music;
+	CSoundPlayer jetpack;
+	CSoundPlayer underscore;
 public:
 	CMyGame(void);
 	~CMyGame(void);
