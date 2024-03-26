@@ -14,5 +14,6 @@ sprites needed:
 9. jetpack cultist going right
 10. gun-boot cultist firing
 11. shimmer effect on shield cultist shield
+12. the background including icons for the three abilities and the trinkets
 
 
