@@ -6,8 +6,19 @@
 CMyGame::CMyGame(void)
 	// to initialise more sprites here use a comma-separated list
 {
-	
-	
+	shield_cooldown = 0;
+	shield_timer = 0;
+	shots = 0;
+	shot_timer = 0;
+	lives = 0;
+	jetpack_fuel = 0;
+	level_segment = 0;
+	level = 0;
+	is_falling = false;
+	is_shielded = false;
+	hint = false;
+	game_over = false;
+	gamewon = false;
 }
 
 CMyGame::~CMyGame(void)
