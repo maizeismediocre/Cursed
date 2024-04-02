@@ -73,7 +73,26 @@ void CMyGame::OnDraw(CGraphics* g)
 {
 	if (IsMenuMode())
 	{
-		startscreen.Draw(g);
+		if (iscontrols == false)
+		{
+			startscreen.Draw(g);
+			Startbutton.Draw(g);
+
+			Exitbutton.Draw(g);
+			controlsbutton.Draw(g);
+
+			Startbutton.SetPosition(960, 650);
+			controlsbutton.SetPosition(960, 450);
+			Exitbutton.SetPosition(960, 250);
+		}
+		if (iscontrols == true)
+		{
+			controlscreen.Draw(g);
+			
+			menubutton.Draw(g);
+			menubutton.SetPosition(960, 100);
+		}
+
 		return;
 	}
 
@@ -114,6 +133,11 @@ void CMyGame::OnDraw(CGraphics* g)
 	{
 		
 		endscreen.Draw(g);
+		menubutton.Draw(g);
+		menubutton.SetPosition(700, 100);
+		Exitbutton.Draw(g);
+		Exitbutton.SetPosition(1100, 100);
+
 	}
 
 	if (game_over == true && gamewon == false)
@@ -519,6 +543,16 @@ void CMyGame::OnInitialize()
 	startscreen.SetImage("Startscreen.bmp");
 	player.LoadImage("player_shield_temp.bmp", CColor::Red());
 	
+	Startbutton.LoadImage("Start.bmp");
+	Startbutton.SetImage("Start.bmp");
+	menubutton.LoadImage("Menu.bmp");
+	menubutton.SetImage("Menu.bmp");
+	Exitbutton.LoadImage("quit.bmp");
+	Exitbutton.SetImage("quit.bmp");
+	controlsbutton.LoadImage("Controls.bmp");
+	controlsbutton.SetImage("Controls.bmp");
+	controlscreen.LoadImage("controlsmenu.bmp");
+	controlscreen.SetImage("controlsmenu.bmp");
 	endscreen.LoadImage("endscreen.bmp");
 	endscreen.SetImage("endscreen.bmp");
 }
@@ -527,6 +561,7 @@ void CMyGame::OnInitialize()
 // use this function to prepare a menu or a welcome screen
 void CMyGame::OnDisplayMenu()
 {
+	controlscreen.SetPosition(960, 540);
 	startscreen.SetPosition(960, 540);	// exits the menu mode and starts the game mode
 	music.Play("Music.wav", -1);
 	music.Volume(0.3);
@@ -732,11 +767,40 @@ void CMyGame::OnLButtonDown(Uint16 x,Uint16 y)
 
 	if (IsMenuMode())
 	{
-		StartGame();
+		if (iscontrols == false)
+		{
+			if (Startbutton.HitTest(x, y))
+			{
+				StartGame();
+			}
+			if (Exitbutton.HitTest(x, y))
+			{
+				StopGame();
+			}
+			if (controlsbutton.HitTest(x, y))
+			{
+				iscontrols = true;
+			}
+		}
+		if (iscontrols == true)
+		{
+			if (menubutton.HitTest(x, y))
+			{
+				iscontrols = false;
+			}
+		}
+		
 	}
 	if (gamewon == true)
 	{
-		StopGame();
+		if (menubutton.HitTest(x, y))
+		{
+			NewGame();
+		}
+		if (Exitbutton.HitTest(x, y))
+		{
+			StopGame();
+		}
 	}
 }
 

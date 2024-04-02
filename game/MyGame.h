@@ -9,6 +9,11 @@ class CMyGame : public CGame
 	CSprite background;
 	CSprite startscreen;
 	CSprite endscreen;
+	CSprite Startbutton;
+	CSprite Exitbutton;
+	CSprite menubutton;
+	CSprite controlsbutton;
+	CSprite controlscreen;
 	CSpriteList shotList;
 	CSpriteList jetpack_enemies; // jet pack enemy
 	CSpriteList gun_enemies; // gun boot enemy
@@ -22,6 +27,7 @@ class CMyGame : public CGame
 	bool is_shielded;
 	bool hint;
 	bool gamewon;
+	bool iscontrols;
 	 int level_segment;
 	 int jetpack_fuel;
 	 int shield_timer;
