@@ -14,6 +14,7 @@ class CMyGame : public CGame
 	CSprite menubutton;
 	CSprite controlsbutton;
 	CSprite controlscreen;
+	CSprite Shield;
 	CSpriteList shotList;
 	CSpriteList jetpack_enemies; // jet pack enemy
 	CSpriteList gun_enemies; // gun boot enemy

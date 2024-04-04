@@ -19,6 +19,11 @@ CMyGame::CMyGame(void)
 	hint = false;
 	game_over = false;
 	gamewon = false;
+	player.AddImage("player_idle.png", "idle", 3, 1, 0, 0, 3, 0);
+	player.AddImage("player_run_l.png", "run_l", 6, 1, 0, 0, 5, 0);
+	player.AddImage("player_run_r.png", "run_r", 6, 1, 0, 0, 5, 0);
+	player.AddImage("player_fall.png", "fall", 2, 1, 0, 0, 1, 0);
+	
 }
 
 CMyGame::~CMyGame(void)
@@ -120,12 +125,12 @@ void CMyGame::OnDraw(CGraphics* g)
 		*g << font(20) << color(CColor::Green()) << xy(10, 1000) << "lives: " << lives;
 		*g << font(20) << color(CColor::Green()) << xy(10, 950) << "level segment: " << level_segment;
 		*g << font(20) << color(CColor::Green()) << xy(10, 900) << "attempts: " << attempts;
-		*g << font(15) << color(CColor::Green()) << xy(1500, 850) << "fuel: " << jetpack_fuel;
-		*g << font(15) << color(CColor::Green()) << xy(1610, 835) << "shots: " << shots;
-		*g << font(15) << color(CColor::Green()) << xy(1730, 840) << "shield timer: " << shield_timer;
+		*g << font(15) << color(CColor::Green()) << xy(1530, 830) << "fuel: " << jetpack_fuel;
+		*g << font(15) << color(CColor::Green()) << xy(1650, 830) << "shots: " << shots;
+		*g << font(15) << color(CColor::Green()) << xy(1750, 830) << "shield timer: " << shield_timer;
 		if (shield_cooldown == 0)
 		{
-			*g << font(15) << color(CColor::Green()) << xy(1730, 820) << "shield ready";
+			*g << font(15) << color(CColor::Green()) << xy(1750, 810) << "shield ready";
 		}
 	}
 	
@@ -149,6 +154,11 @@ void CMyGame::OnDraw(CGraphics* g)
 	if (hint == true)
 	{
 		*g << font(20) << color(CColor::Red()) << xy(400, 1050) << "You need to make it through the segment without losing any lives to progress";
+	}
+	if (is_shielded == true)
+	{
+		Shield.SetPosition(player.GetX(), player.GetY());
+		Shield.Draw(g);
 	}
 }
 void CMyGame::Playercontrol()
@@ -186,21 +196,43 @@ void CMyGame::Playercontrol()
 	if (player.HitTest(platform.front()))
 	{
 		is_falling = false;
+		
+		
 		player.SetMotion(player.GetXVelocity(), 0);
 	}
 	else
 	{
+		
 		is_falling = true;
 	}
 	if (is_falling == true)
 	{
 		player.Accelerate(gravity);
+		player.SetAnimation("fall", 12);
+		
 	}
+
+
 	if (IsKeyDown(SDLK_LEFT)) player.SetMotion(-400, player.GetYVelocity());
 	else if (IsKeyDown(SDLK_RIGHT)) player.SetMotion(400, player.GetYVelocity());
 	else player.SetMotion(0, player.GetYVelocity());
+
+	if (IsKeyDown(SDLK_LEFT) && player.GetYVelocity() == 0)
+	{
+		player.SetAnimation("run_l", 12);
+	}
+	else if (IsKeyDown(SDLK_RIGHT) && player.GetYVelocity() == 0)
+	{
+		player.SetAnimation("run_r", 12);
+	}
+	else if (player.GetYVelocity() == 0)
+	{
+		player.SetAnimation("idle", 5);
+	}
+
 	if (IsKeyDown(SDLK_z) && jetpack_fuel != 0 && is_falling == true)
 	{
+		player.SetImage("player_jetpack.png");
 		jetpack.Play("jetpack.wav");
 		jetpack.Volume(0.8);
 		jetpack_fuel--;
@@ -274,11 +306,13 @@ void CMyGame::Enemycontrol()
 		// if the jetpack cultist goes past x 435 it will turn around
 		if (jetpack_cultist->GetX() <= 435)
 		{
+			
 			jetpack_cultist->SetMotion(100, 0);
 		}
 		// if the jetpack cultist goes past x 1430 it will turn around
 		if (jetpack_cultist->GetX() >= 1430)
 		{
+			
 			jetpack_cultist->SetMotion(-100, 0);
 		}
 		if (player.HitTest(jetpack_cultist) && is_shielded == false)
@@ -290,7 +324,7 @@ void CMyGame::Enemycontrol()
 			jetpack_fuel = 100;
 			shots = 5;
 
-
+			
 
 		}
 
@@ -337,10 +371,12 @@ void CMyGame::Enemycontrol()
 	{
 		if (shield_cultist->GetX() <= 435)
 		{
+			
 			shield_cultist->SetMotion(100, 0);
 		}
 		if (shield_cultist->GetX() >= 1430)
 		{
+			
 			shield_cultist->SetMotion(-100, 0);
 		}
 		if (player.HitTest(shield_cultist) && is_shielded == false)
@@ -496,15 +532,7 @@ if (shield_timer > 0)
 
 	
 	
-if (is_shielded == true)
-{
-	
-		player.SetImage("player_shield_temp.bmp");
-	}
-else
-{
-		player.SetImage("player_temp.bmp");
-	}
+
 	
 }
 
@@ -536,13 +564,13 @@ void CMyGame::OnInitialize()
 {
 	background.LoadImage("temp_background.bmp");
 	background.SetImage("temp_background.bmp");
-	player.LoadImage("player_temp.bmp", CColor::Blue());
-	player.SetImage("player_temp.bmp");
+	
 	
 	startscreen.LoadImage("Startscreen.bmp");
 	startscreen.SetImage("Startscreen.bmp");
-	player.LoadImage("player_shield_temp.bmp", CColor::Red());
-	
+	player.LoadImage("player_jetpack.png");
+	Shield.LoadImage("Shield.png");
+	Shield.SetImage("Shield.png");
 	Startbutton.LoadImage("Start.bmp");
 	Startbutton.SetImage("Start.bmp");
 	menubutton.LoadImage("Menu.bmp");
@@ -623,9 +651,9 @@ void CMyGame::OnStartLevel(Sint16 nLevel)
 			theSpikes.push_back(new CSprite(CRectangle(1200, 700, 200, 30), "spike_h.bmp", CColor::Black(), GetTime()));
 			theSpikes.push_back(new CSprite(CRectangle(730, 700, 400, 30), "spike_h.bmp", CColor::Black(), GetTime()));
 			// second layer of obstacles
-			jetpack_enemies.push_back(new CSprite(650, 550, "jetpack_cultist.bmp", CColor::Blue(), GetTime()));
+			jetpack_enemies.push_back(new CSprite(650, 550, "jetpack_cultist_r.bmp", CColor::Blue(), GetTime()));
 			jetpack_enemies.back()->SetMotion(100, 0);
-			jetpack_enemies.push_back(new CSprite(1200, 550, "jetpack_cultist.bmp", CColor::Blue(), GetTime()));
+			jetpack_enemies.push_back(new CSprite(1200, 550, "jetpack_cultist_l.bmp", CColor::Blue(), GetTime()));
 			jetpack_enemies.back()->SetMotion(-100, 0);
 			
 
@@ -648,9 +676,9 @@ void CMyGame::OnStartLevel(Sint16 nLevel)
 			theSpikes.push_back(new CSprite(CRectangle(1200, 700, 200, 30), "spike_h.bmp", CColor::Black(), GetTime()));
 			theSpikes.push_back(new CSprite(CRectangle(730, 700, 400, 30), "spike_h.bmp", CColor::Black(), GetTime()));
 			// second layer of obstacles
-			shield_enemies.push_back(new CSprite(650, 550, "shield_cultist.bmp", CColor::Red(), GetTime()));
+			shield_enemies.push_back(new CSprite(650, 550, "shield_cultist_r.bmp", CColor::Red(), GetTime()));
 			shield_enemies.back()->SetMotion(100, 0);
-			shield_enemies.push_back(new CSprite(1200, 550, "shield_cultist.bmp", CColor::Red(), GetTime()));
+			shield_enemies.push_back(new CSprite(1200, 550, "shield_cultist_l.bmp", CColor::Red(), GetTime()));
 			shield_enemies.back()->SetMotion(-100, 0);
 
 
@@ -663,9 +691,9 @@ void CMyGame::OnStartLevel(Sint16 nLevel)
 			// fourth layer of obstacles
 			gun_enemies.push_back(new CSprite(650, 200, "Gunboot_cultist.bmp", CColor::Blue(), GetTime()));
 			gun_enemies.push_back(new CSprite(1200, 200, "Gunboot_cultist.bmp", CColor::Blue(), GetTime()));
-			shield_enemies.push_back(new CSprite(650, 300, "shield_cultist.bmp", CColor::Red(), GetTime()));
+			shield_enemies.push_back(new CSprite(650, 300, "shield_cultist_r.bmp", CColor::Red(), GetTime()));
 			shield_enemies.back()->SetMotion(100, 0);
-			shield_enemies.push_back(new CSprite(1200, 300, "shield_cultist.bmp", CColor::Red(), GetTime()));
+			shield_enemies.push_back(new CSprite(1200, 300, "shield_cultist_l.bmp", CColor::Red(), GetTime()));
 			shield_enemies.back()->SetMotion(-100, 0);
 			// fifth layer of obstacles
 			theSpikes.push_back(new CSprite(CRectangle(730, 50, 400, 30), "spike_h.bmp", CColor::Black(), GetTime()));
@@ -678,9 +706,9 @@ void CMyGame::OnStartLevel(Sint16 nLevel)
 				gun_enemies.push_back(new CSprite(750, 750, "Gunboot_cultist.bmp", CColor::Blue(), GetTime()));
 				gun_enemies.push_back(new CSprite(1100, 750, "Gunboot_cultist.bmp", CColor::Blue(), GetTime()));
 				// second layer of obstacles
-				jetpack_enemies.push_back(new CSprite(650, 550, "jetpack_cultist.bmp", CColor::Blue(), GetTime()));
+				jetpack_enemies.push_back(new CSprite(650, 550, "jetpack_cultist_r.bmp", CColor::Blue(), GetTime()));
 				jetpack_enemies.back()->SetMotion(100, 0);
-				jetpack_enemies.push_back(new CSprite(1200, 550, "jetpack_cultist.bmp", CColor::Blue(), GetTime()));
+				jetpack_enemies.push_back(new CSprite(1200, 550, "jetpack_cultist_l.bmp", CColor::Blue(), GetTime()));
 				jetpack_enemies.back()->SetMotion(-100, 0);
 
 
@@ -694,16 +722,16 @@ void CMyGame::OnStartLevel(Sint16 nLevel)
 				// fourth layer of obstacles
 				gun_enemies.push_back(new CSprite(650, 200, "Gunboot_cultist.bmp", CColor::Blue(), GetTime()));
 				gun_enemies.push_back(new CSprite(1200, 200, "Gunboot_cultist.bmp", CColor::Blue(), GetTime()));
-				shield_enemies.push_back(new CSprite(650, 300, "shield_cultist.bmp", CColor::Red(), GetTime()));
+				shield_enemies.push_back(new CSprite(650, 300, "shield_cultist_r.bmp", CColor::Red(), GetTime()));
 				shield_enemies.back()->SetMotion(100, 0);
-				shield_enemies.push_back(new CSprite(1200, 300, "shield_cultist.bmp", CColor::Red(), GetTime()));
+				shield_enemies.push_back(new CSprite(1200, 300, "Shield_cultist_l.bmp", CColor::Red(), GetTime()));
 				shield_enemies.back()->SetMotion(-100, 0);
 				//fifth layer of obstacles
 				theSpikes.push_back(new CSprite(CRectangle(730, 150, 400, 30), "spike_h.bmp", CColor::Black(), GetTime()));
 				// sixth layer of obstacles
-				jetpack_enemies.push_back(new CSprite(650, 50, "jetpack_cultist.bmp", CColor::Blue(), GetTime()));
+				jetpack_enemies.push_back(new CSprite(650, 50, "jetpack_cultist_l.bmp", CColor::Blue(), GetTime()));
 				jetpack_enemies.back()->SetMotion(100, 0);
-				jetpack_enemies.push_back(new CSprite(1200, 50, "jetpack_cultist.bmp", CColor::Blue(), GetTime()));
+				jetpack_enemies.push_back(new CSprite(1200, 50, "jetpack_cultist_r.bmp", CColor::Blue(), GetTime()));
 				jetpack_enemies.back()->SetMotion(-100, 0);
 				break;
 			case 4: // end screen
