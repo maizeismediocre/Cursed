@@ -155,7 +155,7 @@ void CMyGame::OnDraw(CGraphics* g)
 	{
 		*g << font(20) << color(CColor::Red()) << xy(400, 1050) << "You need to make it through the segment without losing any lives to progress";
 	}
-	if (is_shielded == true)
+	if (is_shielded == true && !IsGameOver())
 	{
 		Shield.SetPosition(player.GetX(), player.GetY());
 		Shield.Draw(g);
